@@ -5,6 +5,7 @@ export function Restaurants() {
     { id: 1, name: "RM Sederhana", location: "Jakarta" },
     { id: 2, name: "Warung Sederhana", location: "Bandung" },
     { id: 3, name: "Lesehan Sederhana", location: "Surabaya" },
+    { id: 4, name: "Angkringan Sederhana", location: "Malang" },
   ];
 
   return (
