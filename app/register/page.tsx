@@ -53,11 +53,11 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Create your account</h1>
+          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Buat akunmu</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Already have an account?{" "}
+            Sudah punya akun?{" "}
             <Link href="/login" className="font-medium text-primary hover:text-primary/90">
-              Sign in
+              Masuk di sini
             </Link>
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function RegisterPage() {
         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">Nama</Label>
               <Input id="name" name="name" type="text" required placeholder="Jay Park" />
             </div>
 
@@ -75,7 +75,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <Label htmlFor="email">Email address</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -107,7 +107,7 @@ export default function RegisterPage() {
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-            Register
+            Buat akun
           </Button>
         </form>
       </div>

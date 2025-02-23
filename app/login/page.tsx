@@ -1,82 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ReloadIcon } from "@radix-ui/react-icons"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
-type ErrorType = "username" | "password" | "general"
+type ErrorType = "username" | "password" | "general";
 
 interface ErrorState {
-  type: ErrorType
-  message: string
+  type: ErrorType;
+  message: string;
 }
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<ErrorState | null>(null)
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<ErrorState | null>(null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setIsLoading(true)
-    setError(null)
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
-    const formData = new FormData(event.currentTarget)
-    const data = {
-      username: formData.get("username"),
-      password: formData.get("password"),
-    }
+    const formData = new FormData(event.currentTarget);
+    const username = formData.get("username");
+    const password = formData.get("password");
 
     try {
-      const response = await fetch("https://delta-indie.vercel.app/api/auth/login&quot", {
+      const response = await fetch("https://delta-indie.vercel.app/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || "An error occurred during login")
+        throw new Error(data.message || "Login gagal, periksa kembali username dan password.");
       }
 
-      // Save token in localstorage
+      // Simpan token di localStorage
       if (data.token) {
-        localStorage.setItem("authToken", data.token)
-        // Save token expiry
+        localStorage.setItem("authToken", data.token);
         if (data.expiresIn) {
-          const expiryTime = new Date().getTime() + data.expiresIn * 1000
-          localStorage.setItem("tokenExpiry", expiryTime.toString())
+          const expiryTime = new Date().getTime() + data.expiresIn * 1000;
+          localStorage.setItem("tokenExpiry", expiryTime.toString());
         }
       }
 
-      // Login successful
-      router.push("/dashboard") // Redirect to dashboard/home page
+      // Redirect ke halaman restoran jika login berhasil
+      router.push("/restaurants");
     } catch (err) {
       if (err instanceof Error) {
-        // Handle specific error type
         if (err.message.includes("username")) {
-          setError({ type: "username", message: "Invalid username. Please check and try again." })
+          setError({ type: "username", message: "Username tidak valid." });
         } else if (err.message.includes("password")) {
-          setError({ type: "password", message: "Incorrect password. Please try again." })
+          setError({ type: "password", message: "Password salah." });
         } else {
-          setError({ type: "general", message: err.message })
+          setError({ type: "general", message: err.message });
         }
       } else {
-        setError({ type: "general", message: "An unexpected error occurred. Please try again." })
+        setError({ type: "general", message: "Terjadi kesalahan. Silakan coba lagi." });
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -84,11 +77,11 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Sign in to your account</h1>
+          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Masuk ke Akunmu</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Don't have an account?{" "}
+            Tidak punya akun?{" "}
             <Link href="/register" className="font-medium text-primary hover:text-primary/90">
-              Register here
+              Daftar di sini
             </Link>
           </p>
         </div>
@@ -130,11 +123,10 @@ export default function LoginPage() {
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-            Sign in
+            Masuk
           </Button>
         </form>
       </div>
     </div>
-  )
+  );
 }
-
